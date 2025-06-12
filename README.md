@@ -10,7 +10,7 @@ CryptoTerminal-AI adalah tool berbasis Python untuk edukasi dan analisis crypto 
 
 ## Instalasi
 ```bash
-git clone https://github.com/username/CryptoTerminal-AI.git
+git clone https://github.com/batsm75/CryptoTerminal-AI
 cd CryptoTerminal-AI
 pip install -r requirements.txt
 python main.py
