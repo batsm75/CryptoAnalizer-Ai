@@ -1,0 +1,15 @@
+---
+
+### ✅ 2. **requirements.txt**
+
+Buat file `requirements.txt` dan isi dengan:
+---
+
+### ✅ 3. **Cara Menambahkan ke Repository GitHub**
+
+Kalau kamu sudah ada di folder proyek dan Git sudah diinisialisasi (`git init`), tinggal lakukan ini:
+
+```bash
+git add README.md requirements.txt
+git commit -m "Menambahkan dokumentasi README dan requirements"
+git push origin main  # atau nama branch kamu
