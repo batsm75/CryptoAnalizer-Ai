@@ -1,77 +1,152 @@
 💻 CryptoTerminal-AI
 
-CryptoTerminal-AI adalah tool berbasis Python yang didesain untuk edukasi, analisis pasar kripto dan forex, serta simulasi trading langsung dari terminal Anda. Dilengkapi dengan AI Coach interaktif dan sistem login yang aman, aplikasi ini menjadi teman ideal bagi pemula maupun trader berpengalaman.
+CryptoTerminal-AI adalah terminal pintar berbasis Python untuk trader, analis, dan pembelajar dunia kripto & forex. Dirancang dengan antarmuka berbasis CLI, AI interaktif, dan sistem keamanan bawaan, tool ini cocok untuk pemula maupun pengguna berpengalaman yang ingin belajar, menganalisis, dan menyimulasikan trading langsung dari terminal mereka.
 
-✨ Fitur Utama
-🔒 Sistem Login Aman:
-Pengguna dapat membuat username dan password pribadi.
-Sistem ini dirancang untuk satu akun per perangkat, sehingga penting bagi pengguna untuk menyimpan kredensial mereka.
-Maksimal 3 kali percobaan login untuk keamanan.
-📈 Analisis Pasar Real-time:
-Menampilkan harga kripto dan forex terkini (menggunakan data CoinGecko untuk kripto).
-Perhitungan dan tampilan indikator teknikal: RSI (Relative Strength Index), EMA (Exponential Moving Average).
-Analisis tren harian dan prediksi sederhana.
-🧠 AI Coach & Mentor (Didukung Gemini AI):
-AI interaktif yang dapat menjawab semua pertanyaan Anda seputar dunia kripto dan forex, mulai dari definisi, strategi trading, analisis pasar, hingga psikologi trading.
-Memberikan saran trading dan edukasi istilah-istilah kompleks dengan mudah dipahami.
-📰 Berita Pasar Terkini:
-Menyediakan ringkasan berita kripto dan forex terbaru untuk membantu Anda tetap up-to-date dengan kondisi pasar.
-💡 Psikologi Market & Tips Praktis:
-Menyajikan wawasan tentang aspek psikologis dalam trading dan tips praktis untuk pengambilan keputusan yang lebih baik.
-🚀 Instalasi dan Penggunaan (untuk Termux)
-Ikuti langkah-langkah di bawah ini untuk menginstal dan menjalankan CryptoTerminal-AI di aplikasi Termux pada perangkat Android Anda.
 
-Langkah 1: Perbarui dan Tingkatkan Termux
-Buka aplikasi Termux Anda dan jalankan perintah berikut untuk memastikan semua paket terbaru:
+---
+
+✨ Fitur Unggulan
+
+🔐 Sistem Login Aman
+
+Pengguna membuat username & password pribadi.
+
+Satu akun per perangkat (device-bound).
+
+Maksimal 3x percobaan login (anti-brute force).
+
+
+📊 Analisis Pasar Real-Time
+
+Harga kripto (CoinGecko API) & data forex terkini.
+
+Indikator teknikal otomatis: RSI, EMA.
+
+Prediksi tren harian & analisis sederhana.
+
+
+🧠 AI Coach & Mentor (Powered by Gemini AI)
+
+AI interaktif untuk menjawab pertanyaan seputar:
+
+Definisi aset digital
+
+Strategi trading
+
+Psikologi pasar
+
+Analisis teknikal & fundamental
+
+
+Penjelasan istilah kompleks dengan bahasa sederhana.
+
+
+📰 Ringkasan Berita Terkini
+
+Integrasi NewsData.io API.
+
+Update pasar kripto dan forex setiap hari.
+
+
+💡 Edukasi & Psikologi Trading
+
+Tips praktis untuk mengelola emosi & keputusan.
+
+Materi edukasi berbasis pengalaman nyata.
+
+
+
+---
+
+⚙️ Instalasi & Penggunaan (Android - Termux)
+
+Ikuti langkah-langkah berikut untuk mulai menggunakan CryptoTerminal-AI di perangkat Android Anda melalui Termux:
+
+1. Perbarui Termux
 
 pkg update && pkg upgrade -y
-Langkah 2: Berikan Izin Penyimpanan
-Ini memungkinkan Termux untuk membaca dan menulis file di penyimpanan perangkat Anda, yang diperlukan untuk mengunduh proyek ini.
+
+2. Beri Izin Penyimpanan
 
 termux-setup-storage
-(Pilih "Izinkan" atau "Allow" pada pop-up izin yang muncul.)
 
-Langkah 3: Instal Git dan Python
-Kita memerlukan Git untuk mengkloning repositori dari GitHub dan Python untuk menjalankan skrip.
+> Pilih “Allow” saat muncul pop-up izin.
+
+
+
+3. Instal Git & Python
 
 pkg install git python -y
-Langkah 4: Kloning Repositori
-Sekarang, unduh kode CryptoTerminal-AI dari GitHub:
+
+4. Kloning Repositori
 
 git clone https://github.com/batsm75/CryptoTerminal-AI.git
-Langkah 5: Masuk ke Direktori Proyek
-Pindah ke folder proyek yang baru saja Anda kloning:
+
+5. Masuk ke Direktori Proyek
 
 cd CryptoTerminal-AI
-Langkah 6: Instal Dependensi Python
-Instal semua pustaka Python yang diperlukan oleh aplikasi ini.
+
+6. Instal Dependensi Python
 
 pip install -r requirements.txt
-(Jika file requirements.txt belum tersedia di repositori Anda, buatlah file tersebut secara manual dengan isi: requests, numpy, textwrap)
 
-Langkah 7: Jalankan Aplikasi
-Setelah semua dependensi terinstal, Anda bisa menjalankan CryptoTerminal-AI:
+> Jika requirements.txt belum tersedia, buat dengan isi:
+
+
+
+requests
+numpy
+textwrap
+
+7. Jalankan Aplikasi
 
 python main.py
-(Pastikan nama file utama skrip Anda adalah main.py. Jika berbeda, ganti sesuai nama file Anda.)
+
+> Pastikan file utama bernama main.py. Jika tidak, sesuaikan perintahnya.
+
+
+
+
+---
 
 🔑 Konfigurasi API Keys
-Aplikasi ini menggunakan API Key untuk NewsData.io dan Gemini.
 
-NewsData.io API Key (NEWS_API_KEY):
-Anda bisa mendapatkan API Key gratis dengan mendaftar di NewsData.io.
-Secara default, API Key sudah tertanam dalam kode Anda. Jika Anda ingin menggantinya, edit file main.py dan ubah nilai NEWS_API_KEY.
-Gemini API Key (GEMINI_API_KEY):
-Anda bisa mendapatkan API Key Gemini dari Google AI Studio.
-Secara default, API Key sudah tertanam dalam kode Anda. Jika Anda ingin menggantinya, edit file main.py dan ubah nilai GEMINI_API_KEY.
+NewsData.io (NEWS_API_KEY)
 
-Penting: Untuk alasan keamanan, hindari menyimpan API Key sensitif langsung di repositori publik. Pertimbangkan untuk menggunakan variabel lingkungan atau sistem manajemen kredensial jika Anda berencana untuk mengembangkan lebih lanjut.
+Dapatkan key dari: https://newsdata.io/
+
+Sudah disertakan secara default, tapi bisa diubah lewat main.py.
+
+
+Gemini AI (GEMINI_API_KEY)
+
+Dapatkan dari: Google AI Studio
+
+Ganti key di main.py sesuai kebutuhan.
+
+
+> ⚠️ Penting: Jangan menyimpan API Key sensitif di repositori publik. Gunakan .env atau sistem manajemen rahasia jika ingin lebih aman.
+
+
+
+
+---
 
 📄 Lisensi
-Proyek ini dilisensikan di bawah Lisensi MIT. Lihat file LICENSE untuk detail lebih lanjut.
+
+Proyek ini dilindungi oleh MIT License. Lihat file LICENSE untuk informasi lengkap.
+
+
+---
 
 🤝 Kontribusi
-Kontribusi selalu disambut! Jika Anda memiliki ide, perbaikan, atau ingin melaporkan bug, silakan buka issue atau buat pull request di repositori ini.
 
-Dibuat dengan ❤️ oleh Bays Exploit.
+Terbuka untuk kontribusi!
+Temukan bug? Punya ide fitur baru? Buat issue atau kirim pull request sekarang juga.
 
+
+---
+
+🧑‍💻 Creator
+
+Dibuat dengan ❤️ oleh Bay s Exploit
