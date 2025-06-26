@@ -149,4 +149,4 @@ Temukan bug? Punya ide fitur baru? Buat issue atau kirim pull request sekarang j
 
 🧑‍💻 Creator
 
-Dibuat dengan ❤️ oleh Bay s Exploit
+Dibuat dengan ❤️ oleh Bays Exploit
