@@ -1,171 +1,193 @@
 import os
+import json
+import time
 import requests
 import numpy as np
-import sys
-import time
+import random
+import re # Import untuk regex (cek matematika)
+import textwrap # Import untuk text wrapping
 
-# Sistem Login
-def login():
-    os.system('clear')
-    print("╔═══════════════════════════════╗")
-    print("║          🔐 LOGIN SYSTEM      ║")
-    print("╚═══════════════════════════════╝\n")
-    max_attempt = 3
-    while max_attempt > 0:
-        username = input("👤 Masukkan Nama: ")
-        password = input("🔑 Masukkan Password: ")
+# --- Konfigurasi ---
+CREDENTIALS_FILE = 'credentials.json'
+COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3'
+REFRESH_INTERVAL_SECONDS = 2 # Interval refresh data harga menjadi 2 detik
 
-        if username.lower() == "crypto" and password == "cryptoanalizer":
-            print("\n✅ Login berhasil! Selamat datang, Crypto.\n")
-            time.sleep(1)
-            return True
-        else:
-            max_attempt -= 1
-            print(f"❌ Login gagal. Sisa percobaan: {max_attempt}\n")
-            time.sleep(1)
+# API Key NewsData.io Anda
+NEWS_API_KEY = 'pub_04af9448698b4fc89f8d13e321385574' 
+NEWS_API_BASE = 'https://newsdata.io/api/1/news'
 
-    print("🚫 Gagal login 3 kali. Akses ditolak.")
-    return False
+# API Key Groq (TIDAK DIGUNAKAN)
+GROQ_API_KEY = 'GROQ_API_KEY_TIDAK_DIGUNAKAN' 
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_MODEL_NAME = "llama3-8b-8192" 
 
-# Fitur AI Coach Trading
-def ai_coach_trading():
-    os.system('clear')
-    print("╔═══════════════════════════════════════╗")
-    print("║         🤖 AI COACH TRADING           ║")
-    print("╚═══════════════════════════════════════╝\n")
-    print("Berikut beberapa istilah umum dalam dunia trading:\n")
+# API Key Gemini (untuk AI Coach Mentor di Menu 3)
+GEMINI_API_KEY = 'AIzaSyDFyOGaXX75V5duTsfJFGx-S3NaFe__e5s' 
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+GEMINI_MODEL_NAME = "gemini-2.0-flash"
 
-    istilah = {
-        "Bullish": "Kondisi pasar ketika harga bergerak naik.",
-        "Bearish": "Kondisi pasar ketika harga bergerak turun.",
-        "Support": "Level harga di mana penurunan cenderung tertahan.",
-        "Resistance": "Level harga di mana kenaikan cenderung tertahan.",
-        "EMA": "Exponential Moving Average – rata-rata pergerakan harga dengan bobot lebih ke data terbaru.",
-        "SMA": "Simple Moving Average – rata-rata pergerakan harga biasa.",
-        "RSI": "Relative Strength Index – indikator momentum untuk mengukur kondisi overbought/oversold.",
-        "MACD": "Moving Average Convergence Divergence – indikator tren dan momentum.",
-        "Volume": "Jumlah aset yang diperdagangkan dalam jangka waktu tertentu.",
-        "Breakout": "Kondisi saat harga menembus level support/resistance dengan volume besar.",
-        "Scalping": "Strategi trading jangka sangat pendek.",
-        "Swing Trading": "Strategi trading dalam jangka menengah (hari hingga minggu).",
-        "Divergence": "Ketidaksesuaian arah antara harga dan indikator (misal RSI).",
-        "Long": "Posisi beli, berharap harga naik.",
-        "Short": "Posisi jual, berharap harga turun.",
-    }
+# --- Fungsi Utilitas ---
 
-    for k, v in istilah.items():
-        print(f"🔹 {k}: {v}")
-
-    input("\nTekan Enter untuk kembali ke menu utama...")
-
-# Modul Analisa Harga Coin
-def analisa_harga():
-    os.system("clear")
-    coin = input("🔍 Masukkan nama koin (contoh: bitcoin, solana, ethereum): ").lower()
-    print("🔄 Mengambil data harga...")
-
+def get_terminal_width():
+    """Mendapatkan lebar terminal, dengan fallback."""
     try:
-        r = requests.get(f"https://api.coingecko.com/api/v3/coins/{coin}?localization=false")
-        data = r.json()
-        harga = data["market_data"]["current_price"]["idr"]
-        perubahan_7d = data["market_data"]["price_change_percentage_7d_in_currency"]["idr"]
-        perubahan_30d = data["market_data"]["price_change_percentage_30d_in_currency"]["idr"]
-        perubahan_24h = data["market_data"]["price_change_percentage_24h_in_currency"]["idr"]
+        return os.get_terminal_size().columns
+    except OSError:
+        return 80 # Fallback default width
 
-        ema7 = harga * 1.006
-        ema25 = harga * 1.009
-        ema99 = harga * 0.99
-        rsi = np.random.uniform(25, 75)
-        macd = np.random.choice(["Golden Cross", "Death Cross", "Neutral"])
+def center_text(text, width):
+    """Menengahkan teks dalam lebar tertentu."""
+    if len(text) >= width:
+        return text
+    padding = (width - len(text)) // 2
+    return " " * padding + text + " " * (width - len(text) - padding)
 
-        cut_loss = int(harga * 0.88)
-        target_profit = int(harga * 1.15)
-
-        print(f"\n📈 Harga Saat Ini: Rp {int(harga):,}")
-        print(f"📅 Perubahan 7 Hari: {perubahan_7d:.2f}%")
-        print(f"📅 Perubahan 30 Hari: {perubahan_30d:.2f}%")
-
-        print(f"\n📊 EMA-7: Rp {int(ema7):,}")
-        print(f"📊 EMA-25: Rp {int(ema25):,}")
-        print(f"📊 EMA-99: Rp {int(ema99):,}")
-        print(f"📈 RSI: {rsi:.2f}")
-        print(f"📉 MACD: {macd}")
-
-        print(f"\n🛡️ Cut Loss Plan: Rp {cut_loss:,}")
-        print(f"🎯 Target Profit: Rp {target_profit:,}")
-
-        # Psikologi Market
-        print("\n🧠 Psikologi Market:")
-        if rsi > 70:
-            print("😬 Market euforia, banyak FOMO.")
-        elif rsi < 30:
-            print("😟 Market cenderung panik, ada potensi rebound.")
-        else:
-            print("😐 Market tenang, masih konsolidasi.")
-
-        # Tren Harian
-        print("\n📈 Tren Coin (24 Jam):")
-        if perubahan_24h > 0:
-            print("📊 Tren Harian: Bullish ✅")
-            tren = "bullish"
-        elif perubahan_24h < 0:
-            print("📉 Tren Harian: Bearish ❌")
-            tren = "bearish"
-        else:
-            print("🔄 Tren Harian: Sideways")
-            tren = "sideways"
-
-        # Prediksi & Saran
-        print("\n🔮 Prediksi AI Coach:")
-        if macd == "Golden Cross" and rsi < 70:
-            prediksi = harga * 1.10
-            print(f"📈 Potensi naik ke Rp {int(prediksi):,}")
-        elif macd == "Death Cross" and rsi > 30:
-            prediksi = harga * 0.90
-            print(f"📉 Waspada turun ke Rp {int(prediksi):,}.")
-        else:
-            print("🔎 Arah pasar kurang jelas, tunggu berikutnya.")
-
-        print("\n📣 Saran Coach (Buy / Sell / Hold):")
-        if tren == "bullish" and macd == "Golden Cross" and rsi < 65:
-            print("✅ BUY")
-        elif tren == "bearish" and macd == "Death Cross" and rsi > 40:
-            print("❌ SELL")
-        else:
-            print("⏸️ HOLD")
-
-        print("\n📌 Tips:")
-        print("- Pasang cut loss & take profit.")
-        print("- Gunakan DCA saat market turun.")
-        print("- Catat semua transaksi.")
-
-    except:
-        print("❌ Gagal mendapatkan data. Cek koneksi atau nama koin salah.")
-
-    input("\nTekan ENTER untuk kembali...")
+def print_wrapped(text, initial_indent="", subsequent_indent="", width=None):
+    """Mencetak teks dengan wrapping otomatis sesuai lebar terminal."""
+    if width is None:
+        width = get_terminal_width()
     
-# Menu Utama
-def menu():
-    while True:
-        os.system('clear')
-        print("╔════════════════════════════╗")
-        print("║     Crypto-Terminal AI    ║")
-        print("╚════════════════════════════╝")
-        print("[1] 📈 Analisis Coin")
-        print("[2] 🤖 AI Coach Trading")
-        print("[0] ❌ Keluar")
+    # Kurangi indentasi awal dan berikutnya dari lebar total
+    effective_width = width - len(initial_indent)
 
-        pilihan = input("\nPilih menu: ")
-        if pilihan == "1":
-            analisa_harga()
-        elif pilihan == "2":
-            ai_coach_trading()
-        elif pilihan == "0":
-            print("\n👋 Sampai jumpa!")
-            sys.exit()
-        else:
-            input("Pilihan tidak valid. Tekan ENTER untuk ulang...")
+    wrapped_lines = textwrap.fill(
+        text,
+        width=effective_width,
+        initial_indent=initial_indent,
+        subsequent_indent=subsequent_indent,
+        replace_whitespace=True
+    )
+    print(wrapped_lines)
 
-# Jalankan
-if login():
-    menu()
+
+def clear_screen():
+    """Membersihkan layar konsol."""
+    os.system('clear' if os.name == 'posix' else 'cls')
+
+def format_idr(amount):
+    """Memformat angka menjadi format mata uang IDR."""
+    return f"Rp {int(amount):,}".replace(",", ".")
+
+def get_current_idr_price(coin_id):
+    """Mengambil harga koin saat ini dalam IDR dari CoinGecko."""
+    try:
+        url = f"{COINGECKO_API_BASE}/simple/price?ids={coin_id}&vs_currencies=idr"
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        if coin_id in data and 'idr' in data[coin_id]:
+            return data[coin_id]['idr']
+        return None
+    except requests.exceptions.RequestException as e:
+        return None
+    except json.JSONDecodeError:
+        return None
+
+def get_historical_prices(coin_id, days=90):
+    """Mengambil data harga historis dari CoinGecko dan mensimulasikan OHLC."""
+    try:
+        url = f"{COINGECKO_API_BASE}/coins/{coin_id}/market_chart?vs_currency=idr&days={days}"
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        if 'prices' in data and data['prices']:
+            prices_data = np.array([p[1] for p in data['prices']]) 
+            
+            ohlc_simulated = []
+            if len(prices_data) >= 2:
+                start_index = max(0, len(prices_data) - 4) # Ambil 4 harga untuk 3 candle
+
+                for i in range(start_index + 1, len(prices_data)):
+                    prev_close = prices_data[i-1]
+                    current_price_for_candle = prices_data[i] 
+                    
+                    open_price = prev_close 
+                    close_price = current_price_for_candle
+                    
+                    high = max(open_price, close_price) * (1 + random.uniform(0.0005, 0.002))
+                    low = min(open_price, close_price) * (1 - random.uniform(0.0005, 0.002))
+                    
+                    ohlc_simulated.append({
+                        'open': open_price,
+                        'high': high,
+                        'low': low,
+                        'close': close_price
+                    })
+            
+            return prices_data, ohlc_simulated
+        return np.array([]), []
+    except requests.exceptions.RequestException as e:
+        return np.array([]), []
+    except json.JSONDecodeError:
+        return np.array([]), []
+
+def get_crypto_news(query_term="crypto", num_articles=3):
+    """Mengambil berita kripto dari NewsData.io API."""
+    if not NEWS_API_KEY: 
+        return ["⚠ Error: NEWS_API_KEY belum diatur. Harap daftar di NewsData.io untuk mendapatkan kunci API."]
+        
+    try:
+        params = {
+            'apikey': NEWS_API_KEY,
+            'q': query_term,
+            'language': 'en',
+        }
+        
+        response = requests.get(NEWS_API_BASE, params=params, timeout=5)
+        response.raise_for_status()
+        news_data = response.json()
+
+        articles = []
+        if 'results' in news_data and news_data['results']:
+            for i, article in enumerate(news_data['results']):
+                if i >= num_articles:
+                    break
+                title = article.get('title', 'Tidak ada judul')
+                articles.append(f"- {title}") 
+        
+        if not articles:
+            articles.append("Tidak ada berita terkini yang ditemukan untuk topik ini.")
+            articles.append("Coba lagi nanti atau periksa koneksi internet Anda.")
+        
+        return articles
+
+    except requests.exceptions.RequestException as e:
+        return [f"❌ Gagal mengambil berita: {e}. Pastikan NEWS_API_KEY benar dan ada koneksi internet."]
+    except json.JSONDecodeError:
+        return ["❌ Gagal mendekode respons berita dari API."]
+
+
+# --- Perhitungan Indikator dengan NumPy ---
+
+def calculate_ema_np(prices, period):
+    """Menghitung Exponential Moving Average (EMA) menggunakan NumPy."""
+    if len(prices) < period:
+        return None
+    
+    k = 2 / (period + 1)
+    
+    ema = [np.mean(prices[:period])] 
+    
+    for price in prices[period:]:
+        ema_val = (price * k) + (ema[-1] * (1 - k))
+        ema.append(ema_val)
+        
+    return ema[-1]
+
+def calculate_rsi_np(prices, period=14):
+    """Menghitung Relative Strength Index (RSI) menggunakan NumPy."""
+    if len(prices) < period + 1:
+        return None
+
+    deltas = np.diff(prices)
+    
+    gains = np.where(deltas > 0, deltas, 0)
+    losses = np.where(deltas < 0, np.abs(deltas), 0)
+
+    avg_gain = np.mean(gains[:period])
+    avg_loss = np.mean(losses[:period])
+
+    for i in range(period, len(gains)):
+        avg_gain = ((avg_gain * (period - 1)) + gains[i]) / period
+        avg_loss = ((avg_
+
